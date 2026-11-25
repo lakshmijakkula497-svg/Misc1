@@ -1,14 +1,22 @@
-SELECT
-    Claim_Folder_Id,
-    COUNT(*) AS total_records,
-    SUM(
-        CASE
-            WHEN CAST(Valid_To_Date AS DATE) = DATE '9999-12-31'
-            THEN 1
-            ELSE 0
-        END
-    ) AS current_records
-FROM edl.edw_dbo.dim_claim_folder_base
-GROUP BY Claim_Folder_Id
-HAVING current_records <> 1
-ORDER BY current_records DESC;
+Total Claims =
+DISTINCTCOUNT(
+    dim_claim_folder_base[Claim_Folder_Id]
+)
+
+
+Total Claim Features =
+DISTINCTCOUNT(
+    dim_claim_feature_base[Claim_Feature_Claim_Id]
+)
+
+
+Total Loss Paid =
+SUM(
+    fact_claim_feature_payment_log[Loss_Paid_Amount]
+)
+
+
+Total Payment Amount =
+SUM(
+    fact_claim_feature_payment_log[Payment_Amount]
+)
